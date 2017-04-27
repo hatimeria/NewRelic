@@ -15,6 +15,11 @@
             <proxiblue_newrelic>
                 <class>ProxiBlue_NewRelic_Model</class>
             </proxiblue_newrelic>
+            <cron>
+                <rewrite>
+                    <observer>ProxiBlue_NewRelic_Model_Cron_Observer</observer>
+                </rewrite>
+            </cron>
         </models>
         <blocks>
             <proxiblue_newrelic>

@@ -79,14 +79,15 @@ class ProxiBlue_NewRelic_Model_Abstract
 
     /**
      * Record index events via curl
-     * @param string $type
+     * @param string $message
+     * @param Varien_Event $event
      * @return \ProxiBlue_NewRelic_Model_Observer
      */
-    public function recordEvent($message)
+    public function recordEvent($message, $event = null)
     {
         $type = $this->_eventType . ": " . $message;
-        $application_name = Mage::getStoreConfig('newrelic/api/application_name');
-        $user = $this->getCurrentUser();
+        $application_name = Mage::getStoreConfig('newrelic/api/cron_appname');
+        $user = $this->getCurrentUser($event);
         $data = "deployment[app_name]={$application_name}&";
         $data .= "deployment[description]={$type}&";
         $data .= "deployment[revision]={$type}&";
@@ -106,14 +107,16 @@ class ProxiBlue_NewRelic_Model_Abstract
 
     /**
      * Get the current user, be it admin or frontend
+     *
+     * @param Varien_Event $event
      */
-    public function getCurrentUser()
+    public function getCurrentUser(Varien_Event $event = null)
     {
         if (Mage::app()->getStore()->isAdmin()) {
             if (is_object(Mage::getSingleton('admin/session')->getUser())) {
                 return Mage::getSingleton('admin/session')->getUser()->getEmail();
             } else {
-                return 'Shell Script';
+                return $this->getDeployerScript($event);
             }
         } else {
             if (Mage::getSingleton('customer/session')->isLoggedIn()) {
@@ -148,6 +151,20 @@ class ProxiBlue_NewRelic_Model_Abstract
     public function getExtensionVersion()
     {
         return (string)Mage::getConfig()->getNode()->modules->ProxiBlue_NewRelic->version;
+    }
+
+    /**
+     * @param Varien_Event|null $event
+     * @return mixed|string
+     */
+    protected function getDeployerScript(Varien_Event $event = null)
+    {
+        if (Mage::registry('current_cron_job')) {
+            return Mage::registry('current_cron_job');
+        }
+        $eventName = $event ? 'Event: ' . $event->getName() : null;
+
+        return 'Shell Script: ' . $_SERVER["SCRIPT_FILENAME"]. '; ' . $eventName;
     }
 
 

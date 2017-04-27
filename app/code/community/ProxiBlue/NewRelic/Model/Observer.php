@@ -42,7 +42,7 @@ class ProxiBlue_NewRelic_Model_Observer
         if (Mage::getStoreConfig('newrelic/settings/record_cache')) {
             $event = $observer->getEvent();
             $newRelic = Mage::getModel('proxiblue_newrelic/cache');
-            $newRelic->recordEvent($event->getType());
+            $newRelic->recordEvent($event->getType(), $event);
             return $this;
         }
     }
