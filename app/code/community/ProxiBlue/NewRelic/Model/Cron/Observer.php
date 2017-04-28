@@ -41,8 +41,7 @@ class ProxiBlue_NewRelic_Model_Cron_Observer extends Mage_Cron_Model_Observer
             newrelic_start_transaction($this->cronName);
             newrelic_name_transaction('cron/job/' . $schedule->getJobCode());
         }
-        if (!strstr($schedule->getJobCode(), 'ekomi')) {
-            return parent::_processJob($schedule, $jobConfig, $isAlways);
-        }
+
+        return parent::_processJob($schedule, $jobConfig, $isAlways);
     }
 }
