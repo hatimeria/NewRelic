@@ -1,3 +1,5 @@
+
+
 <?php
 /**
  *    This file is part of ProxiBlue NewRelic Module  available via GitHub https://github.com/ProxiBlue/NewRelic
@@ -33,33 +35,20 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
      * Hook to record all fron controller events
      *
      * @param Varien_Event_Observer $observer
+     * @return ProxiBlue_NewRelic_Model_PreDispatch_Observer
      */
     public function controller_action_predispatch(Varien_Event_Observer $observer)
     {
         try {
             if (extension_loaded('newrelic')) {
-
                 $controllerAction = $observer->getControllerAction();
                 $request = $controllerAction->getRequest();
                 $controllerName = explode("_", $request->getControllerName());
-                if (Mage::getStoreConfig('newrelic/settings/ignore_admin_routes')
-                    && $request->getRouteName() == 'adminhtml'
-                    || $request->getModuleName() == 'admin'
-                    || in_array('adminhtml', $controllerName)
-                ) {
-                    Mage::helper('proxiblue_newrelic')->setAppName(false);
-                    newrelic_ignore_transaction();
-                    newrelic_ignore_apdex();
 
-                    return $this;
-                }
-                if (Mage::helper('proxiblue_newrelic')->ignoreModule($request->getModuleName()) === true) {
-                    Mage::helper('proxiblue_newrelic')->setAppName(false);
-                    newrelic_ignore_transaction();
-                    newrelic_ignore_apdex();
 
-                    return $this;
-                }
+                //setup app name
+                Mage::helper('proxiblue_newrelic')->setAppName(false);
+
                 if (Mage::getStoreConfig('newrelic/settings/named_transactions')) {
                     $route
                         = $request->getRouteName() . '/' . $request->getControllerName() . '/'
@@ -68,9 +57,22 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
                         $route .= ' (module: ' . $request->getModuleName() . ')';
                     }
                     newrelic_name_transaction($route);
-                    Mage::helper('proxiblue_newrelic')->setAppName(true);
 
                     return $this;
+                }
+
+                if (
+                    (   Mage::getStoreConfig('newrelic/settings/ignore_admin_routes')
+                        && $request->getRouteName() == 'adminhtml'
+                        || $request->getModuleName() == 'admin'
+                        || in_array('adminhtml', $controllerName)
+                    )
+                    || (
+                        Mage::helper('proxiblue_newrelic')->ignoreModule($request->getModuleName()) === true
+                    )
+                ) {
+                    newrelic_ignore_transaction();
+                    newrelic_ignore_apdex();
                 }
                 // tracers
                 $tracerList = unserialize(Mage::getStoreConfig('newrelic/settings/custom_tracers'));
@@ -96,3 +98,5 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
         $item = $item['string'];
     }
 }
+
+

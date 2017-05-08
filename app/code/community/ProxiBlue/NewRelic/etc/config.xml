@@ -25,11 +25,6 @@
             <proxiblue_newrelic>
                 <class>ProxiBlue_NewRelic_Block</class>
             </proxiblue_newrelic>
-            <adminhtml>
-                <rewrite>
-                    <dashboard_diagrams>ProxiBlue_NewRelic_Block_Adminhtml_Dashboard_Diagrams</dashboard_diagrams>
-                </rewrite>
-            </adminhtml>
         </blocks>
         <helpers>
             <proxiblue_newrelic>
