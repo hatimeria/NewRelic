@@ -37,6 +37,10 @@
       [
         "/js/newrelic.js",
         "/js/newrelic.js"
+      ],
+      [
+        "/lib/n98-magerun/modules/newrelic-addon",
+        "/lib/n98-magerun/modules/newrelic-addon"
       ]
     ]
   }
