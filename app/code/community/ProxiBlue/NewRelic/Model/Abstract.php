@@ -37,9 +37,11 @@ class ProxiBlue_NewRelic_Model_Abstract
     protected $_data_key;
     protected $_enabled = true;
     protected $_userAgentString = 'ProxiBlue NewRelic for Magento';
+    protected $_internalLink = 'https://internal.hatimeria.com';
 
     public function __construct()
     {
+        $this->_internalLink = Mage::getStoreConfig('newrelic/api/internal_link');
         $this->_userAgentString .= '/' . $this->getExtensionVersion();
         $this->_userAgentString .= ' (https://github.com/ProxiBlue/NewRelic)';
         try {
@@ -93,7 +95,7 @@ class ProxiBlue_NewRelic_Model_Abstract
         $data .= "deployment[revision]={$type}&";
         $data .= "deployment[user]={$user}";
         try {
-            $response = $this->talkToNewRelic($data);
+            $response = $this->internalTalkToNewRelic($data);
             if (Mage::app()->getStore()->isAdmin() && !empty($response)) {
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('adminhtml')->__("Event recorded in NewRelic : " . $type)
@@ -109,6 +111,7 @@ class ProxiBlue_NewRelic_Model_Abstract
      * Get the current user, be it admin or frontend
      *
      * @param Varien_Event $event
+     * @return string
      */
     public function getCurrentUser(Varien_Event $event = null)
     {
@@ -143,6 +146,16 @@ class ProxiBlue_NewRelic_Model_Abstract
         );
         $http = new Varien_Http_Adapter_Curl();
         $http->write('POST', 'https://rpm.newrelic.com/deployments.xml', '1.1', $headers, $data);
+        $response = $http->read();
+        $response = Zend_Http_Response::extractBody($response);
+        return $response;
+    }
+
+    public function internalTalkToNewRelic($data)
+    {
+        $data['key'] = Mage::getStoreConfig('newrelic/api/internal_key');
+        $http = new Varien_Http_Adapter_Curl();
+        $http->write('POST', $this->_internalLink, '1.1', [], $data);
         $response = $http->read();
         $response = Zend_Http_Response::extractBody($response);
         return $response;

@@ -15,11 +15,6 @@
             <proxiblue_newrelic>
                 <class>ProxiBlue_NewRelic_Model</class>
             </proxiblue_newrelic>
-            <cron>
-                <rewrite>
-                    <observer>ProxiBlue_NewRelic_Model_Cron_Observer</observer>
-                </rewrite>
-            </cron>
         </models>
         <blocks>
             <proxiblue_newrelic>
@@ -147,4 +142,40 @@
             </adminhtml>
         </routers>
     </admin>
+    <default>
+        <newrelic>
+            <api>
+                <internal_link>https://internal.hatimeria.com</internal_link>
+            </api>
+        </newrelic>
+    </default>
+
+    <crontab>
+        <events>
+            <default>
+                <observers>
+                    <cron_observer>
+                        <class>proxiblue_newrelic/cron_observer</class>
+                        <method>dispatch</method>
+                    </cron_observer>
+                </observers>
+            </default>
+            <always>
+                <observers>
+                    <cron_observer>
+                        <class>proxiblue_newrelic/cron_observer</class>
+                        <method>dispatchAlways</method>
+                    </cron_observer>
+                </observers>
+            </always>
+            <cron_before>
+                <observers>
+                    <newrelic_aoe_hook_before_job>
+                        <class>proxiblue_newrelic/cron_observer</class>
+                        <method>aoeJobBefore</method>
+                    </newrelic_aoe_hook_before_job>
+                </observers>
+            </cron_before>
+        </events>
+    </crontab>
 </config>
