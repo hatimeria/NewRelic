@@ -121,8 +121,8 @@ class ProxiBlue_NewRelic_Model_Abstract
         } else {
             if (Mage::getSingleton('customer/session')->isLoggedIn()) {
                 return Mage::getSingleton('customer/session')->getCustomer()->getId() . ' / ' . Mage::getSingleton(
-                    'customer/session'
-                )->getCustomer()->getEmail();
+                        'customer/session'
+                    )->getCustomer()->getEmail();
             } else {
                 return 'Guest User - not Logged in';
             }

@@ -1,0 +1,6 @@
+autoloaders:
+  ProxublueNewrelic: %module%/src
+
+event:
+  subscriber:
+    - ProxublueNewrelic\Observer\CommandEventSubscriber
