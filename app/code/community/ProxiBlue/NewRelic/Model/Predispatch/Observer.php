@@ -41,13 +41,14 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
     {
         try {
             if (extension_loaded('newrelic')) {
+                /** @var Mage_Core_Controller_Varien_Action $controllerAction */
                 $controllerAction = $observer->getControllerAction();
+                /** @var Mage_Core_Controller_Request_Http $request */
                 $request = $controllerAction->getRequest();
-                $controllerName = explode("_", $request->getControllerName());
 
 
                 //setup app name
-                Mage::helper('proxiblue_newrelic')->setAppName(false);
+                Mage::helper('proxiblue_newrelic')->setAppName($this->isAdminRoute($request), false);
 
                 if (Mage::getStoreConfig('newrelic/settings/named_transactions')) {
                     $route
@@ -61,11 +62,10 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
                     return $this;
                 }
 
+
                 if (
                     (   Mage::getStoreConfig('newrelic/settings/ignore_admin_routes')
-                        && $request->getRouteName() == 'adminhtml'
-                        || $request->getModuleName() == 'admin'
-                        || in_array('adminhtml', $controllerName)
+                        && $this->isAdminRoute($request)
                     )
                     || (
                         Mage::helper('proxiblue_newrelic')->ignoreModule($request->getModuleName()) === true
@@ -96,6 +96,19 @@ class ProxiBlue_NewRelic_Model_PreDispatch_Observer
     public function cleanTacerList(&$item, $key)
     {
         $item = $item['string'];
+    }
+
+    /**
+     * Detect admin route
+     *
+     * @param $request
+     * @return bool
+     */
+    protected function isAdminRoute(Mage_Core_Controller_Request_Http $request)
+    {
+        $controllerName = explode("_", $request->getControllerName());
+
+        return $request->getRouteName() == 'adminhtml' || $request->getModuleName() == 'admin' || in_array('adminhtml', $controllerName);
     }
 }
 

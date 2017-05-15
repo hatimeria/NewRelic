@@ -51,6 +51,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </application_name>
+                        <backend_application_name translate="label">
+                            <label>Backend Application Name</label>
+                            <comment><![CDATA[The application name to use for backend requests.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </backend_application_name>
                         <cron_appname>
                             <label>Cron Application Name</label>
                             <comment><![CDATA[Set application name used for tracking cron]]></comment>
