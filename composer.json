@@ -10,7 +10,7 @@
       "email": "sales@proxiblue.com.au"
     }, {
       "name": "Artur Jewula",
-      "email": "artur.jewula2hatimeria.pl"
+      "email": "artur.jewula@hatimeria.pl"
     }
   ],
   "require": {
@@ -27,16 +27,12 @@
         "/app/etc/modules/ProxiBlue_NewRelic.xml"
       ],
       [
-        "/app/design/adminhtml/default/default/template/dashboard/proxiblue_newrelic.phtml",
-        "/app/design/adminhtml/default/default/template/dashboard/proxiblue_newrelic.phtml"
-      ],
-      [
         "/app/code/local/Mage/Core/Exception.php",
         "/app/code/local/Mage/Core/Exception.php"
       ],
       [
-        "/js/newrelic.js",
-        "/js/newrelic.js"
+        "/lib/n98-magerun/modules/newrelic-addon",
+        "/lib/n98-magerun/modules/newrelic-addon"
       ]
     ]
   }
