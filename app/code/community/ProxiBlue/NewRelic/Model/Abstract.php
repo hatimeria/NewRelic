@@ -88,18 +88,22 @@ class ProxiBlue_NewRelic_Model_Abstract
     public function recordEvent($message, $event = null)
     {
         $type = $this->_eventType . ": " . $message;
-        $application_name = Mage::getStoreConfig('newrelic/api/cron_appname');
         $user = $this->getCurrentUser($event);
-        $data = "deployment[app_name]={$application_name}&";
+        $data = "deployment[revision]={$type}&";
         $data .= "deployment[description]={$type}&";
-        $data .= "deployment[revision]={$type}&";
+        $data .= "deployment[changelog]={$type}&";
         $data .= "deployment[user]={$user}";
+        $data .= '&key=' . Mage::getStoreConfig('newrelic/api/internal_key');
         try {
-            $response = $this->internalTalkToNewRelic($data);
-            if (Mage::app()->getStore()->isAdmin() && !empty($response)) {
+            $response = $this->talkToNewRelic($data);
+            $response = Zend_Json_Decoder::decode($response);
+            if (Mage::app()->getStore()->isAdmin() && !empty($response) && $response['success']) {
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('adminhtml')->__("Event recorded in NewRelic : " . $type)
                 );
+            }
+            elseif(!empty($response) && !$response['success']) {
+                Mage::log(['url' => $this->getInternalDeploymentLink(), 'request' => $data,'response' => $response], null, 'newrelic.log');
             }
         } catch (Exception $e) {
             throw ProxiBlue_NewRelic_Exception($e);
@@ -140,22 +144,8 @@ class ProxiBlue_NewRelic_Model_Abstract
      */
     public function talkToNewRelic($data)
     {
-        $headers = array(
-            'x-api-key:' . $this->_api_key,
-            'User-Agent:' . $this->_userAgentString
-        );
         $http = new Varien_Http_Adapter_Curl();
-        $http->write('POST', 'https://rpm.newrelic.com/deployments.xml', '1.1', $headers, $data);
-        $response = $http->read();
-        $response = Zend_Http_Response::extractBody($response);
-        return $response;
-    }
-
-    public function internalTalkToNewRelic($data)
-    {
-        $data['key'] = Mage::getStoreConfig('newrelic/api/internal_key');
-        $http = new Varien_Http_Adapter_Curl();
-        $http->write('POST', $this->_internalLink, '1.1', [], $data);
+        $http->write(Zend_Http_Client::POST, $this->getInternalDeploymentLink(), '1.1', ['Content-Type: application/x-www-form-urlencoded'], $data);
         $response = $http->read();
         $response = Zend_Http_Response::extractBody($response);
         return $response;
@@ -180,5 +170,12 @@ class ProxiBlue_NewRelic_Model_Abstract
         return 'Shell Script: ' . $_SERVER["SCRIPT_FILENAME"]. '; ' . $eventName;
     }
 
+    /**
+     * @return string
+     */
+    protected function getInternalDeploymentLink()
+    {
+        return $this->_internalLink . 'api/newrelic/deployment';
+    }
 
 }
