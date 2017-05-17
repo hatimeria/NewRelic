@@ -41,9 +41,9 @@ class ProxiBlue_NewRelic_Model_Abstract
 
     public function __construct()
     {
-        $this->_internalLink = Mage::getStoreConfig('newrelic/api/internal_link') ?: 'https://internal.hatimeria.com';
+        $this->_internalLink = Mage::getStoreConfig('newrelic/api/internal_link') ?: 'https://internal.hatimeria.com/';
         $this->_userAgentString .= '/' . $this->getExtensionVersion();
-        $this->_userAgentString .= ' (https://github.com/ProxiBlue/NewRelic)';
+        $this->_userAgentString .= ' (https://github.com/hatimeria/NewRelic)';
         try {
             $this->setDefaults();
         } catch (Mage_Core_Model_Store_Exception $e) {
@@ -96,7 +96,6 @@ class ProxiBlue_NewRelic_Model_Abstract
         $data .= '&key=' . Mage::getStoreConfig('newrelic/api/internal_key');
         try {
             $response = $this->talkToNewRelic($data);
-            $response = Zend_Json_Decoder::decode($response);
             if (Mage::app()->getStore()->isAdmin() && !empty($response) && $response['success']) {
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('adminhtml')->__("Event recorded in NewRelic : " . $type)
@@ -140,14 +139,22 @@ class ProxiBlue_NewRelic_Model_Abstract
      * Talk to NewRelic API
      *
      * @param array $data
-     * @return string
+     * @return boolean|array
      */
     public function talkToNewRelic($data)
     {
         $http = new Varien_Http_Adapter_Curl();
+        $http->setConfig(['timeout' => 2]);
         $http->write(Zend_Http_Client::POST, $this->getInternalDeploymentLink(), '1.1', ['Content-Type: application/x-www-form-urlencoded'], $data);
         $response = $http->read();
         $response = Zend_Http_Response::extractBody($response);
+        try {
+            $response = Zend_Json_Decoder::decode($response);
+        }
+        catch (Exception $e) {
+            $response = false;
+        }
+
         return $response;
     }
 
