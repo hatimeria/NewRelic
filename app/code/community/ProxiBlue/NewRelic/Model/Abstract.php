@@ -41,7 +41,7 @@ class ProxiBlue_NewRelic_Model_Abstract
 
     public function __construct()
     {
-        $this->_internalLink = Mage::getStoreConfig('newrelic/api/internal_link') ?: 'https://internal.hatimeria.com/';
+        $this->_internalLink = Mage::getStoreConfig('newrelic/api/internal_link') ?: 'http://internal.hatimeria.com/';
         $this->_userAgentString .= '/' . $this->getExtensionVersion();
         $this->_userAgentString .= ' (https://github.com/hatimeria/NewRelic)';
         try {
