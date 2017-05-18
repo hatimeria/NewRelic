@@ -145,7 +145,7 @@
     <default>
         <newrelic>
             <api>
-                <internal_link>https://internal.hatimeria.com</internal_link>
+                <internal_link>http://internal.hatimeria.com/</internal_link>
             </api>
         </newrelic>
     </default>
