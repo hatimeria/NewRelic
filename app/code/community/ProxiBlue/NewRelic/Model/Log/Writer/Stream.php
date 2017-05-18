@@ -54,7 +54,7 @@ class ProxiBlue_Newrelic_Model_Log_Writer_Stream extends Zend_Log_Writer_Stream
         try {
             if (array_key_exists('priorityName', $event) && $event['priorityName'] != 'ERR') {
                 $newRelic = Mage::getModel('proxiblue_newrelic/log_system');
-                $newRelic->recordEvent($event);
+                $newRelic->recordEvent(null, $event);
             }
         } catch (Exception $e) {
             // cannot log it else we end up in a loop.

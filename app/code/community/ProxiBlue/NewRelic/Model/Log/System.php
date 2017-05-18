@@ -35,9 +35,10 @@ class ProxiBlue_NewRelic_Model_Log_System extends ProxiBlue_NewRelic_Model_Abstr
      * Record a log event to new relic
      *
      * @param type $event
+     * @param mixed $e
      * @return type
      */
-    public function recordEvent($event)
+    public function recordEvent($event, $e = null)
     {
         if (extension_loaded('newrelic')) {
             if (Mage::getStoreConfig('newrelic/settings/record_system_log')
