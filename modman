@@ -1,4 +1,3 @@
 app/code/community/ProxiBlue/NewRelic                                               app/code/community/ProxiBlue/NewRelic
 app/code/local/Mage/Core/Exception.php                                              app/code/local/Mage/Core/Exception.php
 app/etc/modules/ProxiBlue_NewRelic.xml                                              app/etc/modules/ProxiBlue_NewRelic.xml
-lib/n98-magerun/modules/newrelic-addon                                              lib/n98-magerun/modules/newrelic-addon

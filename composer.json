@@ -29,10 +29,6 @@
       [
         "/app/code/local/Mage/Core/Exception.php",
         "/app/code/local/Mage/Core/Exception.php"
-      ],
-      [
-        "/lib/n98-magerun/modules/newrelic-addon",
-        "/lib/n98-magerun/modules/newrelic-addon"
       ]
     ]
   }
