@@ -87,6 +87,11 @@ class ProxiBlue_NewRelic_Model_Abstract
      */
     public function recordEvent($message, $event = null)
     {
+        if (!Mage::getStoreConfig('newrelic/api/internal_key')) {
+            Mage::log('Cannot record newrelic event, missing internal proxy secret key');
+            return;
+        }
+
         $type = $this->_eventType . ": " . $message;
         $user = $this->getCurrentUser($event);
         $data = "deployment[revision]={$type}&";
