@@ -92,6 +92,14 @@
                     </proxiblue_newrelic_controller_action_predispatch>
                 </observers>
             </controller_action_predispatch>
+            <cron_before>
+                <observers>
+                    <newrelic_aoe_hook_before_job>
+                        <class>proxiblue_newrelic/cron_observer</class>
+                        <method>aoeJobBefore</method>
+                    </newrelic_aoe_hook_before_job>
+                </observers>
+            </cron_before>
         </events>
         <resources>
             <proxiblue_proxiblue_newrelic_setup>
