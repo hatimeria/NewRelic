@@ -1,5 +1,3 @@
-
-
 <?php
 /**
  *    This file is part of ProxiBlue NewRelic Module  available via GitHub https://github.com/ProxiBlue/NewRelic
