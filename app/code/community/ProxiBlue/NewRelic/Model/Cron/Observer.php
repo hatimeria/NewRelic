@@ -25,7 +25,7 @@ class ProxiBlue_NewRelic_Model_Cron_Observer extends ParentClass
     /**
      * @param Varien_Event_Observer $observer
      */
-    public function dispatch($observer)
+    public function dispatch(Varien_Event_Observer $observer)
     {
         if (extension_loaded('newrelic')) {
             newrelic_set_appname($this->cronName);
